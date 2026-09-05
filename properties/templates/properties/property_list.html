@@ -1,0 +1,86 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}قائمة العقارات - منصة إدارة العقارات{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    
+    <!-- قسم العنوان وأزرار الفلترة -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 pb-4 border-b border-gray-200">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">عقارات الشركة والعروض المتاحة</h1>
+            <p class="text-gray-600 mt-2">تصفح أحدث العقارات المتاحة للبيع، الإيجار، وأصول الشركة.</p>
+        </div>
+        
+        <!-- أزرار الفلترة السريعة -->
+        <div class="flex space-x-2 space-x-reverse mt-4 md:mt-0">
+            <a href="?type=" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white transition">الكل</a>
+            <a href="?type=ASSET" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white transition">أصول الشركة</a>
+            <a href="?type=SALE" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white transition">للبيع</a>
+            <a href="?type=RENT" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white transition">للإيجار</a>
+        </div>
+    </div>
+
+    <!-- شبكة عرض العقارات (Grid) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for prop in properties %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 flex flex-col justify-between border border-gray-100">
+            
+            <!-- صورة العقار (أو صورة افتراضية في حال عدم وجود صور) -->
+            <div class="relative h-48 bg-gray-200">
+                {% if prop.images.first %}
+                    <img src="{{ prop.images.first.image.url }}" alt="{{ prop.title }}" class="w-full h-full object-cover">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                        <span>لا توجد صورة</span>
+                    </div>
+                {% endif %}
+                
+                <!-- شارة نوع العرض (حسب الحالة) -->
+                <span class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                    {{ prop.get_listing_type_display }}
+                </span>
+            </div>
+
+            <!-- تفاصيل العقار -->
+            <div class="p-6 flex-grow">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ prop.title }}</h3>
+                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ prop.description }}</p>
+                
+                <div class="flex items-center text-gray-500 text-sm mb-4">
+                    <svg class="w-4 h-4 ml-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span>{{ prop.address }}</span>
+                </div>
+
+                <div class="flex justify-between items-center border-t border-gray-100 pt-4 mt-4">
+                    <div>
+                        <span class="text-xs text-gray-500 block">المساحة</span>
+                        <span class="font-semibold text-gray-800">{{ prop.area }} م²</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-500 block">السعر</span>
+                        <span class="text-lg font-bold text-blue-600">{{ prop.price }} درهم</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر التفاصيل أو التعاقد -->
+            <div class="px-6 pb-6">
+                <a href="#" class="w-full block text-center bg-gray-900 text-white font-semibold py-2.5 rounded-lg hover:bg-blue-600 transition">
+                    عرض التفاصيل
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-16 bg-white rounded-xl shadow-sm border border-gray-100">
+            <p class="text-gray-500 text-lg">لا توجد عقارات مضافة حتى الآن.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

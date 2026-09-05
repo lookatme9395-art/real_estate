@@ -1,0 +1,65 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}الرئيسية - منصة إدارة العقارات{% endblock %}
+
+{% block content %}
+<div class="space-y-12">
+    
+    <!-- قسم الترحيب الرئيسي (Hero Section) -->
+    <div class="bg-gradient-to-r from-blue-700 to-blue-900 rounded-2xl shadow-xl p-10 md:p-16 text-white text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-4">ابحث عن عقارك المثالي بكل سهولة</h1>
+        <p class="text-blue-100 text-lg max-w-2xl mx-auto mb-8">نقدم لك أفضل أصول الشركة، العقارات المعروضة للبيع والإيجار، مع نظام أقساط مرن يتيح لك الدفع بالشهر أو عبر دفعات ميسرة.</p>
+        <div class="flex justify-center space-x-4 space-x-reverse">
+            <a href="{% url 'property_list' %}" class="bg-white text-blue-900 font-bold px-8 py-3 rounded-xl shadow hover:bg-blue-50 transition">
+                تصفح جميع العقارات
+            </a>
+            {% if not request.user.is_authenticated %}
+            <a href="{% url 'register' %}" class="bg-blue-600 border border-blue-400 text-white font-bold px-8 py-3 rounded-xl shadow hover:bg-blue-500 transition">
+                إنشاء حساب جديد
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- قسم أحدث العقارات المتاحة -->
+    <div>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">أحدث العقارات المتاحة</h2>
+            <a href="{% url 'property_list' %}" class="text-blue-600 font-semibold hover:underline">عرض الكل &larr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for prop in latest_properties %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 flex flex-col justify-between border border-gray-100">
+                <div class="relative h-48 bg-gray-200">
+                    {% if prop.images.first %}
+                        <img src="{{ prop.images.first.image.url }}" alt="{{ prop.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                            <span>لا توجد صورة</span>
+                        </div>
+                    {% endif %}
+                    <span class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                        {{ prop.get_listing_type_display }}
+                    </span>
+                </div>
+
+                <div class="p-6 flex-grow">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ prop.title }}</h3>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ prop.description }}</p>
+                    <div class="flex justify-between items-center border-t border-gray-100 pt-4 mt-4">
+                        <span class="text-xs text-gray-500">{{ prop.area }} م²</span>
+                        <span class="text-lg font-bold text-blue-600">{{ prop.price }} درهم</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100">
+                <p class="text-gray-500">لا توجد عقارات متاحة للعرض حالياً.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

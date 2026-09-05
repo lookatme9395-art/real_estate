@@ -1,0 +1,92 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}لوحة التحكم الرئيسية{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">لوحة تحكم النظام العقاري</h1>
+
+    <!-- أزرار العمليات السريعة -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'property_add' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+            + إضافة عقار جديد
+        </a>
+        <a href="{% url 'contract_add' %}" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition">
+            + تسجيل عقد جديد وتوليد الأقساط
+        </a>
+        <a href="{% url 'expense_add' %}" class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition">
+            + تسجيل مصروف (صيانة/فواتير)
+        </a>
+    </div>
+
+    <!-- قسم العقارات وإدارتها -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">العقارات المسجلة</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">العنوان</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">النوع</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الحالة</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">السعر</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for prop in properties %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ prop.title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.get_listing_type_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.get_status_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.price }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2 space-x-reverse">
+                            <!-- أزرار التعديل والحذف التي كانت ناقصة -->
+                            <a href="{% url 'property_edit' prop.id %}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">تعديل</a>
+                            <a href="{% url 'property_delete' prop.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">حذف</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- قسم العقود والأقساط وتأكيد السداد -->
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">العقود والأقساط المالية</h2>
+        {% for contract in contracts %}
+            <div class="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-bold text-lg text-gray-800">عقد لـ: {{ contract.property.title }} (العميل: {{ contract.client.username }})</h3>
+                    <span class="text-sm font-semibold text-blue-600">الإجمالي: {{ contract.total_amount }}</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">نظام الدفع: {{ contract.get_payment_system_display }} | البداية: {{ contract.start_date }}</p>
+                
+                <!-- جدول الأقساط التابعة للعقد مع زر تأكيد السداد -->
+                <div class="bg-white rounded p-3 border">
+                    <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">جدول الأقساط:</h4>
+                    <div class="space-y-2">
+                        {% for installment in contract.installments.all %}
+                        <div class="flex justify-between items-center text-sm border-b pb-2">
+                            <span>مبلغ القسط: <strong>{{ installment.amount }}</strong> — الاستحقاق: {{ installment.due_date }}</span>
+                            <div>
+                                {% if installment.status == 'PAID' %}
+                                    <span class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-bold">تم السداد ({{ installment.paid_date }})</span>
+                                {% else %}
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-1 rounded-full font-bold">معلق</span>
+                                    <!-- زر تأكيد السداد المباشر -->
+                                    <a href="{% url 'installment_pay' installment.id %}" class="mr-2 bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 transition">
+                                        تأكيد السداد
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

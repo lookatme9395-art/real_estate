@@ -1,0 +1,39 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}إنشاء حساب جديد - منصة العقارات{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 p-8 my-12">
+    
+    <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">إنشاء حساب جديد</h2>
+        <p class="text-gray-600 text-sm mt-2">أنشئ حسابك الآن لمتابعة العقود والأقساط بسهولة</p>
+    </div>
+
+    <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div>
+            <label class="block text-gray-700 text-sm font-semibold mb-2">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" 
+                class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition shadow-md">
+            تسجيل الحساب
+        </button>
+    </form>
+
+    <div class="text-center mt-6">
+        <p class="text-sm text-gray-600">لديك حساب بالفعل؟ <a href="{% url 'login' %}" class="text-blue-600 font-semibold hover:underline">سجل دخولك هنا</a></p>
+    </div>
+
+</div>
+{% endblock %}

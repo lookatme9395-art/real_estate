@@ -1,0 +1,71 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}لوحة تحكم المالك{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">لوحة تحكم مالك العقار</h1>
+
+    <!-- الملخص المالي الخاص بعقارات المالك فقط -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-xl shadow-md border-r-4 border-blue-500">
+            <h3 class="text-gray-500 text-sm font-semibold">إجمالي إيرادات عقاراتي</h3>
+            <p class="text-2xl font-bold text-gray-800 mt-2">{{ total_income }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md border-r-4 border-red-500">
+            <h3 class="text-gray-500 text-sm font-semibold">إجمالي مصروفات عقاراتي</h3>
+            <p class="text-2xl font-bold text-gray-800 mt-2">{{ total_expenses }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md border-r-4 border-green-500">
+            <h3 class="text-gray-500 text-sm font-semibold">صافي العائد (الأرباح)</h3>
+            <p class="text-2xl font-bold text-gray-800 mt-2">{{ net_profit }}</p>
+        </div>
+    </div>
+
+    <!-- أزرار الإدارة السريعة الخاصة بالمالك -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'property_add' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+            + إضافة عقار جديد باسمي
+        </a>
+        <a href="{% url 'expense_add' %}" class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition">
+            + تسجل مصروف لعقاري
+        </a>
+    </div>
+
+    <!-- عقاراتي الخاصة -->
+    <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">عقاراتي المسجلة</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">العنوان</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">النوع</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">الحالة</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">السعر</th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for prop in properties %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ prop.title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.get_listing_type_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.get_status_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ prop.price }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2 space-x-reverse">
+                            <a href="{% url 'property_edit' prop.id %}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">تعديل</a>
+                            <a href="{% url 'property_delete' prop.id %}" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">حذف</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">لا توجد عقارات مسجلة لك حتى الآن.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

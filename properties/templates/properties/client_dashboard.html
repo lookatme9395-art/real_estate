@@ -1,0 +1,45 @@
+{% extends 'properties/base.html' %}
+
+{% block title %}لوحة تحكم العميل{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">لوحة تحكم العميل</h1>
+
+    <div class="bg-white rounded-xl shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">عقودي وأقساطي المالية</h2>
+        
+        {% if contracts %}
+            {% for contract in contracts %}
+                <div class="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-bold text-lg text-gray-800">عقد عقار: {{ contract.property.title }}</h3>
+                        <span class="text-sm font-semibold text-blue-600">المبلغ الإجمالي: {{ contract.total_amount }}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">نوع العقد: {{ contract.get_contract_type_display }} | البداية: {{ contract.start_date }}</p>
+                    
+                    <div class="bg-white rounded p-3 border">
+                        <h4 class="text-xs font-bold text-gray-700 uppercase mb-2">تفاصيل الأقساط:</h4>
+                        <div class="space-y-2">
+                            {% for installment in contract.installments.all %}
+                            <div class="flex justify-between items-center text-sm border-b pb-2">
+                                <span>مبلغ القسط: <strong>{{ installment.amount }}</strong> — تاريخ الاستحقاق: {{ installment.due_date }}</span>
+                                <div>
+                                    {% if installment.status == 'PAID' %}
+                                        <span class="bg-green-100 text-green-800 text-xs px-2.5 py-1 rounded-full font-bold">تم الدفع ({{ installment.paid_date }})</span>
+                                    {% else %}
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-1 rounded-full font-bold">معلق (غير مدفوع)</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-gray-500">لا توجد عقود مسجلة لحسابك حالياً.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
