@@ -23,7 +23,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SECRET_KEY = 'django-insecure-vhdp(mx$fak#=6te&9-l4e+aw!bom+df2pu8n3wi-azqaf@5!j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['.pythonanywhere.com', 'real_estate.onrender.com', '127.0.0.1']
 
