@@ -21,12 +21,12 @@
     <!-- شريط التنقل العلوي (Navbar) -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-blue-600">عقارات  الأحلام</a>
+            <a href="{% url 'index' %}" class="text-2xl font-bold text-blue-600">عقارات  الأحلام</a>
             <nav class="hidden md:flex space-x-6 space-x-reverse">
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">الرئيسية</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">عقارات الشركة</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">للبيع</a>
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">للإيجار</a>
+                <a href="{% url 'index' %}" class="text-gray-600 hover:text-blue-600 transition">الرئيسية</a>
+                <a href="{% url 'property_list' %}" class="text-gray-600 hover:text-blue-600 transition">عقارات </a>
+                <!-- <a href="#" class="text-gray-600 hover:text-blue-600 transition">للبيع</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition">للإيجار</a> -->
             </nav>
             <div>
                 {% if user.is_authenticated %}
