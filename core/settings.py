@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-vhdp(mx$fak#=6te&9-l4e+aw!bom+df2pu8n3wi-azqaf@5!j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.pythonanywhere.com', 'real_estate.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = 'login'  # اسم الـ URL الخاص بتسجيل الدخول لديك
 LOGIN_REDIRECT_URL = 'dashboard'  # أين يذهب المستخدم بعد تسجيل الدخول بنجاح
